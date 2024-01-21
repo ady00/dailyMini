@@ -20,3 +20,5 @@ SecretStorage
 urllib3
 zipp
 puzpy
+decompress
+
