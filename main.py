@@ -677,7 +677,6 @@ def main():
         traceback.print_exc()
         print("ERROR! " * 10)
         print("Settings: ", [browser, url, version.VERSION])
-        input("Press enter to continue...")
 
 
 if __name__ == "__main__":
