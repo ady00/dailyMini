@@ -25,7 +25,7 @@ jobs:
 
           
       - name: execute py script # run main.py
-        run: python3 main.py
+        # run: python3 main.py
           
       - name: commit files
         run: |
