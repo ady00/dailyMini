@@ -20,6 +20,10 @@ if sys.version_info >= (3, 11): from datetime import UTC
 else: import datetime as datetime_fix; UTC=datetime_fix.timezone.utc
 import json
 
+os.environ['myUsername'] = 'username'
+os.environ['myPassword'] = 'secret'
+
+
 
 CACHE_DATA = False
 LOG_CALLS = None
