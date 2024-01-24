@@ -173,18 +173,9 @@ def pick_browser():
 # debugging remotely a tiny bit easier
 def get_url(cookies, url):
     cookies = requests.utils.cookiejar_from_dict(cookies)
-    if LOG_CALLS is not None:
-        with open(LOG_CALLS, "a", newline="", encoding="utf-8") as f:
-            f.write("URL " + url + "\n")
-            f.write("COOKIES " + json.dumps(cookies, default=str) + "\n")
-            try:
-                f.write("COOKIES_RAW " + json.dumps(requests.utils.dict_from_cookiejar(cookies)) + "\n")
-            except:
-                pass
+    
     resp = requests.get(url, cookies=cookies).content
-    if LOG_CALLS is not None:
-        with open(LOG_CALLS, "a", newline="", encoding="utf-8") as f:
-            f.write("RESPONSE " + base64.b64encode(resp).decode("utf-8") + "\n")
+   
     resp = resp.decode("utf-8")
     return resp
 
