@@ -657,7 +657,7 @@ def version_warn():
 def main():
     
     url = "https://www.nytimes.com/crosswords/game/mini"
-    browser = "Chrome"
+    browser = "Firefox"
   
 
     try:
