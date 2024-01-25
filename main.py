@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/root/dailyMini/venv/bin/python3
 
 from email.quoprimime import unquote
 import browser_cookie3
