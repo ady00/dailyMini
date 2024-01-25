@@ -146,7 +146,6 @@ def pick_browser():
         default_number = None
         keys = list(sorted(options))
         for i, desc in enumerate(keys):
-            print(f" {i+1}) {desc}")
             if default is not None and desc == default:
                 default_number = str(i + 1)
         
@@ -202,7 +201,6 @@ def load_cookies(browser):
 def get_puzzle_from_id(cookies, puzzle_id):
     # Get the puzzle itself
     puzzle_url = f"https://www.nytimes.com/svc/crosswords/v6/puzzle/{puzzle_id}.json"
-    print(puzzle_url)
     new_format = get_url(cookies, puzzle_url)
     new_format = json.loads(new_format)
 
@@ -232,7 +230,6 @@ def get_puzzle(url, browser):
                 cache = json.load(f)
 
     if url not in cache:
-        print(f"Loading {url}...")
 
         cookies = load_cookies(browser)
         for _ in range(4):
@@ -296,7 +293,6 @@ def get_puzzle(url, browser):
 def print_puzzle(p):
     # Dump out the puzzle, just a helper mostly to debug things
     p = p['gamePageData']
-    print(p['gamePageData'])
     width, height = p["dimensions"]["columnCount"], p["dimensions"]["rowCount"]
     for y in range(height):
         row = " "
@@ -333,7 +329,6 @@ def print_puzzle(p):
             row = row.replace(" " + "# " * x, BLOCK_LEFT + BLOCK_MID.join([BLOCK_MID] * x) + BLOCK_RIGHT)
 
         # And output the results
-        print(" " + row + extra)
 
 
 def latin1ify(s):
@@ -355,11 +350,7 @@ def latin1ify(s):
         s = re.sub(pattern, repl, s)
 
     s = s.strip()
-
-    # Warn on anything left over
-    for x in s:
-        if not ' ' <= x <= '~':
-            print(f"Warning: {json.dumps(x)} will likely cause problems in {s} from {source_string}")
+    
 
     return s
 
@@ -430,12 +421,7 @@ def data_to_puz(puzzle):
     p.height = data["dimensions"]["rowCount"]
     p.width = data["dimensions"]["columnCount"]
 
-    print("\n\n")
-
-
-    print("\n\n")
-    print("\n\n")
-    print("\n\n")
+    
 
     
 
@@ -445,7 +431,6 @@ def data_to_puz(puzzle):
     # Fill out the main grid
     p.solution = ''.join(gridchar(x) for x in data['cells'])
 
-    print("test!")
 
     gridnums = []
 
@@ -476,7 +461,6 @@ def data_to_puz(puzzle):
     seen = set()
     clues = []
     for cell in data['cells']:
-        print(cell)
         for clue in cell.get('clues', []):
             if clue not in seen:
                 seen.add(clue)
@@ -523,8 +507,6 @@ def data_to_puz(puzzle):
                 clues.append(latin1ify(html.unescape(temp)))
     p.clues = clues
 
-    print(across_clue_real)
-    print(down_clue_real)
 
     # See if any of the answers is multi-character (rebus)
     if max([len(x['answer']) for x in data['cells'] if 'answer' in x]) > 1:
@@ -550,23 +532,14 @@ def data_to_puz(puzzle):
                               if 'text' in x)
 
 
-    print("\n\n\n")
-
-    print("labels:")
+    
     gridnums = [int(value) for value in gridnums]
-    print(gridnums)
 
-    print("Down Answers:", down_answers)
-    print("Across Answers:", across_answers)
+    
 
     # Print the across and down clues
-    print("Across Clues:", across_clue_real)
-    print("Down Clues:", down_clue_real)
+    
 
-    print(list(p.solution)) 
-
-
-    print("Puzzle Size:", f"{p.width}x{p.height}")
 
 
     if 'publicationDate' in data['meta']:
@@ -627,6 +600,9 @@ def data_to_puz(puzzle):
             "down": down_answers
         }
     }
+    # only print!
+    print(json.dumps(crossword_data, indent=2))
+
 
 
     filename = str(filename_full) + ".json"
@@ -649,10 +625,7 @@ def data_to_puz(puzzle):
 
 def version_warn():
     ver = version.get_ver_from_github()
-    if ver is not None:
-        if ver > version.VERSION:
-            print(f"Info: Version {ver} is available, consider upgrading if any issues occur")
-            print("")
+    
 
 def main():
     
@@ -664,6 +637,7 @@ def main():
 
         puzzle = get_puzzle(url, browser)
         output = data_to_puz(puzzle)
+
         
 
     except:
