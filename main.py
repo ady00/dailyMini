@@ -11,10 +11,17 @@ import json
 import puz
 import sys
 import html
-import datetime
+import datetime as date
 import time
 import base64
 import version
+from supabase import create_client, Client
+from datetime import datetime, timezone
+import uuid
+
+
+
+
 
 if sys.version_info >= (3, 11): from datetime import UTC
 else: import datetime as datetime_fix; UTC=datetime_fix.timezone.utc
@@ -400,7 +407,7 @@ def data_to_puz(puzzle):
     p.title = 'New York Times Crossword'
     if 'publicationDate' in data['meta']:
         year, month, day = data['meta']['publicationDate'].split('-')
-        d = datetime.date(int(year), int(month), int(day))
+        d = date.date(int(year), int(month), int(day))
         months = ['', 'January', 'February', 'March', 'April', 'May', 'June',
                   'July', 'August', 'September', 'October', 'November', 'December']
         dow = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
@@ -552,8 +559,6 @@ def data_to_puz(puzzle):
     
 
 
-
-
     crossword_data = {
         "title": p.title,
         "author": p.author,
@@ -611,6 +616,38 @@ def data_to_puz(puzzle):
         json.dump(crossword_data, json_file, indent=2)
 
 
+    SUPABASE_URL = 'https://hetszssurnrltpueswfq.supabase.co'
+    SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhldHN6c3N1cm5ybHRwdWVzd2ZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDYyMTcwMDksImV4cCI6MjAyMTc5MzAwOX0.pcF2ejtrPQF73eC41eYBQ7mogLmQYEVCTbgTTbBC_E0'
+
+
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+    current_utc_time = datetime.now(timezone.utc)
+    timestampz_format = current_utc_time.strftime('%Y-%m-%dT%H:%M:%S.%f%z')
+
+
+    puzzle_id = str(uuid.uuid4())
+
+    puzzle_data_supabase = {
+        'id': puzzle_id,  # Replace with the actual UUID for the 'id' field
+        'created_at': timestampz_format,  # Replace with the actual timestamp for the 'created_at' field
+        'name': p.title,
+        'rows': p.width,  # Replace with the actual value for the 'rows' field
+        'cols': p.height,  # Replace with the actual value for the 'cols' field
+        'grid': list(p.solution), 
+        'gridnums': gridnums,  
+        'circles': [],  
+        'created_by': '839bbc36-c9a3-42b8-a0a4-0c86943cbce5', 
+        'clues': {'down': down_clue_real, 'across': across_clue_real},  
+        'answers': {'down': down_answers, 'across': across_answers},  
+    }
+    
+
+    supabase.table('puzzles').upsert(puzzle_data_supabase).execute()
+    
+
+
+
 
     # All done
     return p
@@ -650,5 +687,4 @@ def main():
 
 if __name__ == "__main__":
 
-    r = requests.get('https://weather.talkpython.fm/api/weather/?city=Berlin&country=DE')
     main()
